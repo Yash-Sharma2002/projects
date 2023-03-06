@@ -35,8 +35,12 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.5.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@tailwindcss/typography": "^0.5.9",
     "daisyui": "^2.51.3",
+    "framer-motion": "^10.0.2",
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.8.2"
   }

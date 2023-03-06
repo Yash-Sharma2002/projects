@@ -1,18 +1,6 @@
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
-
-*,*::after,*::before{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-:root{
-    color-scheme:white ;
-    background: white;
-}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -24,4 +12,53 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+
+h1{
+  padding: 10px 30px;
+  border-bottom: 1px solid black;
+  width: fit-content;
+  position: relative;
+}
+
+h1::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 11;
+  bottom: -5px;
+  left: 0;
+}
+
+h1::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 11;
+  bottom: -5px;
+  right: 0;
+}
+
+.text {
+  font-size: 24px;
+  text-align: start;
+  margin: 3rem auto;
+}
+
+@media screen and (max-width: 768px) {
+  .text {
+    font-size: 18px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .collapse {
+   display: block;
+  }
 }
