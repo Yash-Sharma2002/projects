@@ -20,22 +20,33 @@ function App() {
             <Route path="/" element={<Home />} />
 
             {/* type means the type of products we are showing of same kind */}
-            {
-              ProductData.map((item, index) => {
-                return (
-                  <Route
-                    key={index}
-                    path={`/shop=${item.url}`}
-                    element={<Shop data={item.Name} />}
-                  />
-                );
-              })
-
-            }
-            <Route path="/shop=all" element={<Shop data={ProductData} />} />
+            {ProductData.map((item, index) => {
+              return (
+                <Route
+                  key={index}
+                  path={`/shop=${item.url}`}
+                  element={<Shop />}
+                />
+              );
+            })}
+            <Route path="/shop=all" element={<Shop />} />
 
             {/* id means the id of the product */}
-            {/* <Route path="/shop=:type/product=:id" element={<Product />} /> */}
+            {ProductData.map((item, index) => {
+              return (
+                <>
+                  {item.products.map((product, idx) => {
+                    return (
+                      <Route
+                        key={idx}
+                        path={`/shop=${item.url}/product=${product.id}`}
+                        element={<Product />}
+                      />
+                    );
+                  })}
+                </>
+              );
+            })}
           </Routes>
         </BrowserRouter>
         <Footer />
@@ -43,6 +54,5 @@ function App() {
     </>
   );
 }
-
 
 export default App;
