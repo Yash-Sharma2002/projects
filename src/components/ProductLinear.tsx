@@ -5,7 +5,7 @@ export default function ProductLinear({ data }: any) {
     <>
       {data.map((item: any, idx: number) => {
         return (
-          <div className="my-16 md:my-24 w-11/12 text-center md:w-10/12 mx-auto">
+          <div key={idx} className="my-16 md:my-24 w-11/12 text-center md:w-10/12 mx-auto">
             <p className="text-start text-[24px] px-3 md:text-[28px] font-[700]">
               {item.Name} Products
             </p>

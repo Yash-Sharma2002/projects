@@ -8,9 +8,7 @@ export default function Shop() {
   let [data, setData] = React.useState<any>([])
 
 
-  const { toTitle } = React.useContext(MainContext)
   const currentPage = window.location.pathname.slice(6)
-  console.log(currentPage)
 
   React.useEffect(() => {
     if(currentPage === "all") return setData(ProductData)

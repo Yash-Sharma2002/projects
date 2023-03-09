@@ -39,10 +39,10 @@ export default function Top() {
                             </p>
                         </div>
                         <div className='w-full md:w-1/2 hidden md:flex flex-wrap justify-end'>
-                            <img src={img4} alt="AlDrop" className='h-[250px] m-1 rounded-md' />
+                            <img src={img4} alt="AlDrop" className='h-[250px] hidden lg:block m-1 rounded-md' />
                             <img src={img2} alt="Door Handle" className='h-[250px] m-1 rounded-md' />
                             <img src={img3} alt="Mortice Lock" className='h-[250px] m-1 rounded-md' />
-                            <img src={img1} alt="Chimney" className='h-[250px] m-1 rounded-md' />
+                            <img src={img1} alt="Chimney" className='h-[250px] hidden lg:block m-1 rounded-md' />
                         </div>
                     </div>
                 </div>

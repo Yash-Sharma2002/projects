@@ -16,12 +16,11 @@ export function Footer() {
                         <a className="navbar-brand flex justify-start items-center  my-8 md:my-10 " href="/">
                             <p className="font-[600] text-[24px] leading-[24px] ml-2">ParX Hardwares</p>
                         </a>
-                        <p className="text-[12px] leading-[20px] font-[400] ">© 2023 Design Elementary. All rights reserved</p>
+                        <p className="text-[12px] leading-[20px] font-[400] ">© 2023 Parx Hardwares. All rights reserved</p>
                     </div>
 
-                    <div className="w-10/12 md:w-[70%] my-8 md:my-4 flex flex-wrap justify-evenly items-start ">
-                        <div className="divider opacity-[0.1] before:bg-[#E6E8EC!important] after:bg-[#E6E8EC!important] divider-horizontal"></div>
-                        <div className="w-11/12 md:w-auto my-4">
+                    <div className="w-10/12 md:w-[70%] my-8 md:my-4 flex flex-wrap justify-start items-start ">
+                        <div className="w-11/12 md:w-auto my-4 mx-4">
                             <p className="text-[16px] leading-[24px] font-[500]">Company Fact Sheet</p>
                             <div className="mt-2 md:mt-8">
                                 <p className="text-[14px] leading-[24px] font-[700]">Year of Establishment: 2010</p>
@@ -32,8 +31,7 @@ export function Footer() {
                                 <p className="text-[14px] leading-[24px] font-[700]">Standard Certifications: ISO 9001:2008 certified Company</p>
                             </div>
                         </div>
-                        <div className="divider opacity-[0.1] before:bg-[#E6E8EC!important] after:bg-[#E6E8EC!important] divider-horizontal"></div>
-                        <div className="w-11/12 md:w-auto my-4">
+                        <div className="w-11/12 md:w-auto my-4 mx-4">
                             <p className="text-[16px] leading-[24px] font-[500]">Explore</p>
                             <div className="mt-2 md:mt-8">
                                 {
@@ -45,8 +43,7 @@ export function Footer() {
                                 }
                             </div>
                         </div>
-                        <div className="divider opacity-[0.1] before:bg-[#E6E8EC!important] after:bg-[#E6E8EC!important] divider-horizontal"></div>
-                        <div className="w-11/12 md:w-auto my-4">
+                        <div className="w-11/12 md:w-auto my-4 mx-4">
                             <p className="text-[16px] leading-[24px] font-[500]">Contacts</p>
                             <div className="mt-2 md:mt-8">
                                 <p className="text-[14px] leading-[24px] font-[700]">Call: 123123</p>
@@ -65,7 +62,6 @@ export function Footer() {
                                 </div>
                             </div>
                         </div>
-                        <div className="divider opacity-[0.1] before:bg-[#E6E8EC!important] after:bg-[#E6E8EC!important] divider-horizontal"></div>
                     </div>
                 </div>
             </div>
