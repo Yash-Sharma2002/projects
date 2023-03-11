@@ -78,7 +78,7 @@ export default function Carousel({ num, productsData }: any) {
                         {
                             productsData.products.map((item, index) => {
                                 return (
-                                    <Card key={index} num={num} data={item} />
+                                    <Card shop={productsData.url} key={index} num={num} data={item} />
                                 )
                             })
                         }

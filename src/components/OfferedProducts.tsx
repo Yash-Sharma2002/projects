@@ -147,7 +147,7 @@ export default function OfferedProducts() {
                     <div className="z-10 carousel carousel-products carousel-center  space-x-4 flex justify-start items-center  my-2" >
                         {
 
-                            productsList.map((item, index) => {
+                            productsList.map((item, index:number) => {
                                 return (
                                     <div key={index} className='carousel-item-products'>
                                         <p
