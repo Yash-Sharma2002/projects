@@ -8,8 +8,22 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
- 
+.bg-base-300 {
+  background-color: #fff;
+}
+
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.input[disabled] {
+  background-color: white;
+  color: #000!important;
+}
+
+.html,
+body {
+  scroll-behavior: smooth;
+  background-color: white;
 }
