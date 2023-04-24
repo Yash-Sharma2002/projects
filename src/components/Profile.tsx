@@ -111,9 +111,10 @@ export default function Profile() {
 
   async function profileDetailsUpdate() {
     if (checkValidate()) {
-      await axios.post(PROFILE_UPDATE, encrypt({ ...data.email, email_verified: "1" }), {
+      console.log(data)
+      await axios.post(PROFILE_UPDATE, encrypt({ ...data, email_verified: "1" }), {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + user.token
         }
       })
@@ -125,7 +126,7 @@ export default function Profile() {
     <>
       <Header />
       <div className='w-full  bg-[#f5f5f5]'>
-        <div className='py-14 w-11/12 md:w-10/12 mx-auto flex justify-between items-start flex-col md:flex-row'>
+        <div className='py-14 w-11/12  mx-auto flex justify-between items-start flex-col md:flex-row'>
           <div className='md:w-[30%] w-full border-[2px] border-solid border-[#E6E8EC] rounded-xl p-4 bg-white'>
             <div className='flex items-center justify-between flex-col'>
               {
@@ -133,7 +134,7 @@ export default function Profile() {
                   <img
                     src={user?.profile_image}
                     alt='profile'
-                    className='w-full h-[310px] my-3 rounded-[50%]'
+                    className='w-full h-auto my-3 rounded-[50%]'
                   />
                   :
                   <AccountCircleIcon sx={{ color: '#000000', fontSize: '200px', fontWeight: '600', }} />
