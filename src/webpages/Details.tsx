@@ -28,6 +28,7 @@ export default function Details() {
     if (!data.isError) {
       setData(data.modal)
       setLoading(false)
+      console.log(data.modal)
     }
     else {
       setLoading(false)
@@ -83,7 +84,7 @@ export default function Details() {
                             <p className='text-[18px] w-full py-3 text-white bg-[#312f92] rounded-t-md text-center font-[700] '>{item.game_name}</p>
                             <img src={item.game_image_path} alt="jigsaw" className='h-[150px] w-full ' />
                             {
-                              data.game_completed_level ?
+                              !item.game_completed_level ?
                                 <a href={`/destination/${destination}/game/${item.game_slug}`} className='text-[18px] block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '>Play Now</a>
                                 :
                                 <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '>Cannot Play</p>

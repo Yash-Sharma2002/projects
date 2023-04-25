@@ -118,7 +118,7 @@ export default function Jigsaw() {
 
                   {
                     completed ?
-                      <Complete message="You have completed this level." link={`/destination/${destination}/game/jigsaw`} btText='Next Level' />
+                      <Complete message="You have completed this level." link={`/destination/${destination}/game/jigshaw`} btText='Next Level' />
                       :
 
                       <div className="point-level">
