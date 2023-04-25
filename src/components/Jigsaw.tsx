@@ -111,7 +111,7 @@ export default function Jigsaw() {
 
               :
               <div className="tscontainer">
-                <div className="main-ping" style={{ width: '20%', border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20, background: 'white', padding: '10px' }}>
+                <div className="main-ping w-[95%] md:w-[25%] bg-white p-[10px]" style={{  border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20,  }}>
                   <img src={data.game_levels[parseInt(currentLevel)].level_image} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
                   <p className="text-black text-[18px] font-bold mx-auto w-fit my-2">Resolve the Puzzle </p>
                   <br />
@@ -152,7 +152,7 @@ export default function Jigsaw() {
                   columns={parseInt(currentLevel) + 2}
                   onSolved={lastApiCall}
                   // @ts-ignore
-                  className="jigsaw-puzzle relative"
+                  className="jigsaw-puzzle relative my-2 md:my-1 w-[95%!important] md:w-[73%!important] "
                 />
               </div>
             : <Loading />

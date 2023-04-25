@@ -44,15 +44,13 @@
 }
 
 .imgcontainer {
-  /* width: 50%; */
-  /* z-index: 1; */
-  margin: auto;
   position: relative;
 }
 
 @media screen and (max-width: 868px) {
-  .tscontainer {
+  .tscontainer,.main-ping {
     width: 95%;
+    margin: auto;
     display: block;
   }
 

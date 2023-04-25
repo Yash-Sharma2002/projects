@@ -67,7 +67,7 @@ export default function TreasureHunt() {
             setData(data.modal);
             startWatch.current();
             setLoading(false)
-      console.log(data.modal)
+            console.log(data.modal)
 
         }
         else {
@@ -177,7 +177,7 @@ export default function TreasureHunt() {
 
                             :
                             <div className="tscontainer"  >
-                                <div className="main-ping" style={{ width: '30%', border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20, background: 'white', padding: '10px' }}>
+                                <div className="main-ping w-[95%] md:w-[25%] bg-white p-[10px]" style={{  border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20,}}>
                                     <img src={data.game_detail.image_path} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
                                     <p className="text-black">Drag and drop the destinations to correct places </p>
                                     <div className="placeContainer" >
@@ -197,35 +197,37 @@ export default function TreasureHunt() {
                                         completed ?
                                             <Complete message="You have completed the level" link={`/destination/${destination}`} />
                                             :
+                                            <>
+                                                <div className="point-level">
+                                                    <h2 className='left-subheading text-start flex justify-start text-black ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                        <img src={timeicon} alt='clock' style={{ width: "40px", marginLeft: "-10px" }} />
+                                                        <p id="mins" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
+                                                            {b / 10 >= 1 ? b : "0" + b}
+                                                        </p>
+                                                        :
+                                                        <p id="sec" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
+                                                            {a / 10 >= 1 ? a : "0" + a}
+                                                        </p>
+                                                    </h2>
+                                                    <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                        Level : <span className="font-bold">{data.game_levels[0].level}</span>
+                                                    </h2>
+                                                </div>
+                                                <div className="point-level">
+                                                    <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                        Maximum Points : <span className="font-bold">{data.game_levels[0].max_point}</span>
+                                                    </h2>
 
-                                            <div className="point-level">
-                                                <h2 className='left-subheading text-start flex justify-start text-black ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                    <img src={timeicon} alt='clock' style={{ width: "40px", marginLeft: "-10px" }} />
-                                                    <p id="mins" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
-                                                        {b / 10 >= 1 ? b : "0" + b}
-                                                    </p>
-                                                    :
-                                                    <p id="sec" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
-                                                        {a / 10 >= 1 ? a : "0" + a}
-                                                    </p>
-                                                </h2>
-                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                    Level : <span className="font-bold">{data.game_levels[0].level}</span>
-                                                </h2>
-
-                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                    Maximum Points : <span className="font-bold">{data.game_levels[0].max_point}</span>
-                                                </h2>
-
-                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                    Minimum Points : <span className="font-bold">{data.game_levels[0].min_point}</span>
-                                                </h2>
-                                            </div>
+                                                    <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                        Minimum Points : <span className="font-bold">{data.game_levels[0].min_point}</span>
+                                                    </h2>
+                                                </div>
+                                            </>
                                     }
 
                                 </div>
 
-                                <div className="imgcontainer">
+                                <div className="imgcontainer my-4 lg:my-1">
                                     <img src={data.game_levels[0].position_image} alt="map" style={{
                                         width: "100%",
                                         border: '1px solid #000',
