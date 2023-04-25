@@ -1,97 +1,105 @@
-import React, { useState } from "react";
+
+// @ts-nocheck
+import React from "react";
 import "../styles/ping-container.css";
 import Header from './Header';
 import Footer from './Footer';
-import { API_BASE_URL, SECRET_KEY } from '../constants/data';
+import { API_BASE_URL } from '../constants/data';
 import axios from "axios";
 //@ts-ignore
-import CryptoJS from "crypto-js";
-//@ts-ignore
 import timeicon from '../assets/timeicon.png';
-import Confetti from "../components/Design";
-//@ts-ignore
-import song from '../assets/celebration-sound.mp3'
+
+
+import { useParams } from "react-router-dom";
+import { LoginContext } from "../context/Context";
+import Loading from "./Loader";
+import Complete from "./Complete";
 
 
 export default function TreasureHunt() {
 
-    const [data, setData] = React.useState('null');
+    const { user, setLoading, decrypt, encrypt, setMessageType, setMessage, setShow } = React.useContext<any>(LoginContext);
+
+    const [data, setData] = React.useState(null);
     const [completed, setCompleted] = React.useState(false);
     const [destMoved, setDestMoved] = React.useState(0);
 
-    const [celebration] = React.useState(new Audio(song));
+    const { destination } = useParams<any>();
 
 
-    var sec = 0,
-        min = 0;
-    //   const startWatch = React.useRef();
-    //   startWatch.current = () => {
-    //     const startTimer = setInterval(() => {
-    //       sec++;
-    //       if (sec === 60) {
-    //         min++;
-    //         sec = 0;
-    //       }
-    //       setValue();
-    //     }, 1000);
-    //     return startTimer;
-    //   }
+    const ApiCall = React.useRef(() => { })
+    // stopwatch
+    let sec: number = 0
+    let min: number = 0
+    const [a, setA] = React.useState(0);
+    const [b, setB] = React.useState(0);
+    const startWatch = React.useRef<any>(null)
 
-    //   function setValue() {
-    //     document.getElementById('mins').textContent =
-    //       min < 10 ? ' 0' + min : ' ' + min;
-    //     document.getElementById('sec').textContent =
-    //       sec < 10 ? ' 0' + sec : ' ' + sec;
-    //   }
+    startWatch.current = () => {
+        setInterval(() => {
+            if (sec === 59) {
+                min += 1
+                sec = 0
+            } else {
+                sec += 1
+            }
+            setA(sec)
+            setB(min)
 
-    async function apiCall() {
-        const destination = localStorage.getItem('destinationSlug');
-        const bearer = localStorage.getItem('tokenkey');
+        }, 1000);
+    }
 
-        const response = await axios.get(`${API_BASE_URL}game/${destination}/treasure-hunt`, {
+
+
+
+
+
+
+    ApiCall.current = async () => {
+        setLoading(true)
+        let { data } = await axios.get(`${API_BASE_URL}game/${destination}/treasure-hunt`, {
             headers: {
-                'Authorization': 'Bearer ' + bearer
+                'Authorization': 'Bearer ' + user.token,
             },
         });
-        if (response) {
-            var bytes = CryptoJS.AES.decrypt(response.data.result, SECRET_KEY);
-            var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-            setData(decryptedData);
-            //   startWatch.current();
-            localStorage.setItem('game_id', decryptedData.modal.game_levels[0].game_id);
-            localStorage.setItem('level', decryptedData.modal.game_levels[0].level);
+        data = decrypt(data.result)
+        if (!data.isError) {
+            setData(data.modal);
+            startWatch.current();
+            setLoading(false)
+      console.log(data.modal)
+
+        }
+        else {
+            setMessageType('error')
+            setMessage('Something went wrong. Please try again later.')
+            setShow(true)
         }
     }
-    // React.useEffect(() => {
-    //     apiCall()
-    // }, [])
+    React.useEffect(() => {
+        ApiCall.current()
+    }, [])
 
-    // timer functions end
 
 
     async function lastApiCall() {
-        console.log('lastApiCall');
-        const data = {
-            destination_id: localStorage.getItem('destinationId'),
-            game_id: localStorage.getItem('game_id'),
-            level: localStorage.getItem('level'),
-            level_complete_timing: min
+        const collection: any = {
+            destination_id: data.game_levels[0].destination_id,
+            game_id: data.game_levels[0].game_id,
+            level: data.game_levels[0].level,
+            level_complete_timing: b
         }
-        console.log(data);
-        var ciphertext = CryptoJS.AES.encrypt(
-            JSON.stringify(data),
-            SECRET_KEY
-        ).toString();
 
-        const response = await axios.post(`${API_BASE_URL}game/level/save`, ciphertext, {
+
+        let response = await axios.post(`${API_BASE_URL}game/level/save`, encrypt(collection), {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('tokenkey'),
+                'Authorization': 'Bearer ' + user.token,
                 'Content-Type': 'text/plain'
             },
         });
-        if (response) {
+        response = decrypt(response.data.result)
+        if (!response.isError) {
             setCompleted(true)
-            celebration.play();
         }
     }
 
@@ -117,165 +125,127 @@ export default function TreasureHunt() {
     }
 
     function atEndTouch(event: any) {
-        // const positionId = event.target.id
-        // if (element === positionId) {
-        //   const ping = data.modal.game_levels[0].positions.find((ping) => ping.name.replace(/ /g, "-") === element);
-        //   const position = data.modal.game_levels[0].positions.find((position) => position.name.replace(/ /g, "-") === positionId);
-        //   let displaceElement = getOffset(document.getElementById(positionId))
-        //   let displaceParent = getOffset(document.getElementsByClassName(`pingContainer-${positionId}`)[0])
-        //   if (ping && position) {
-        //     setDestMoved(destMoved + 1)
-        //     ping.x = displaceElement.left - displaceParent.left + 0.5;
-        //     ping.y = displaceElement.top - displaceParent.top + 0.5;
-        //   }
-        // }
-        // if (destMoved === data.modal.game_levels[0].positions.length - 1) {
-        //   lastApiCall();
-        //   clearInterval(startWatch.current);
-        // }
+        const positionId = event.target.id
+        if (element === positionId) {
+            const ping = data.game_levels[0].positions.find((ping) => ping.name.replace(/ /g, "-") === element);
+            const position = data.game_levels[0].positions.find((position) => position.name.replace(/ /g, "-") === positionId);
+            let displaceElement = getOffset(document.getElementById(positionId))
+            let displaceParent = getOffset(document.getElementsByClassName(`pingContainer-${positionId}`)[0])
+            if (ping && position) {
+                setDestMoved(destMoved + 1)
+                ping.x = displaceElement.left - displaceParent.left + 0.5;
+                ping.y = displaceElement.top - displaceParent.top + 0.5;
+            }
+        }
+        if (destMoved === data.game_levels[0].positions.length - 1) {
+            lastApiCall();
+            clearInterval(startWatch.current);
+        }
     };
 
 
     const handleDrop = (event: any, positionId: number) => {
-        // const id = event.dataTransfer.getData("id");
-        // if (id === positionId) {
-        //   const ping = data.modal.game_levels[0].positions.find((ping) => ping.name.replace(/ /g, "-") === id);
-        //   const position = data.modal.game_levels[0].positions.find((position) => position.name.replace(/ /g, "-") === positionId);
-        //   let displaceElement = getOffset(document.getElementById(positionId))
-        //   let displaceParent = getOffset(document.getElementsByClassName(`pingContainer-${positionId}`)[0])
-        //   if (ping && position) {
-        //     setDestMoved(destMoved + 1)
-        //     ping.x = displaceElement.left - displaceParent.left + 0.5;
-        //     ping.y = displaceElement.top - displaceParent.top + 0.5;
-        //   }
-        // }
-        // if (destMoved === data.modal.game_levels[0].positions.length - 1) {
-        //   lastApiCall();
-        //   clearInterval(startWatch.current);
-        // }
+        const id = event.dataTransfer.getData("id");
+        if (id === positionId) {
+            const ping = data.game_levels[0].positions.find((ping) => ping.name.replace(/ /g, "-") === id);
+            const position = data.game_levels[0].positions.find((position) => position.name.replace(/ /g, "-") === positionId);
+            let displaceElement = getOffset(document.getElementById(positionId))
+            let displaceParent = getOffset(document.getElementsByClassName(`pingContainer-${positionId}`)[0])
+            if (ping && position) {
+                setDestMoved(destMoved + 1)
+                ping.x = displaceElement.left - displaceParent.left + 0.5;
+                ping.y = displaceElement.top - displaceParent.top + 0.5;
+            }
+        }
+        if (destMoved === data.game_levels[0].positions.length - 1) {
+            lastApiCall();
+            clearInterval(startWatch.current);
+        }
     };
 
     return (
         <>
             <Header />
-            <div className='w-full lg:h-[80vh] bg-[#f5f5f5]'>
+            <div className='w-full  bg-[#f5f5f5]'>
                 {
                     data ?
-                        <div className="tscontainer"  >
-                            <div className="main-ping" style={{ width: '30%', border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20, background: 'white', padding: '10px' }}>
-                                <p className="text-black">Drag and drop the destinations to correct places </p>
-                                <div className="placeContainer" >
-                                    <img src={require('../assets/location.jpg')} alt="abcd" draggable
-                                    // onDragStart={(event) => handleDragStart(event, ping.name.replace(/ /g, "-"))}
-                                    // style={{ left: ping.x, top: ping.y, zIndex: completed ? 0 : 100 }}
-                                    // onTouchStart={e => atTouch(e)}
-                                    // className={`${ping.name.replace(/ /g, "-")} ping`} 
-                                    />
-                                    {/* {data.modal.game_levels[0].positions.map((ping) => (
-                    <div key={ping.name.replace(/ /g, "-")} className={`pingContainer-${ping.name.replace(/ /g, "-")} pingContainer`} style={{ position: 'relative', margin: '10px' }}>
-                      <img src={ping.icon} alt={ping.name} draggable
-                        onDragStart={(event) => handleDragStart(event, ping.name.replace(/ /g, "-"))}
-                        style={{ left: ping.x, top: ping.y, zIndex: completed ? 0 : 100 }}
-                        onTouchStart={e => atTouch(e)}
-                        className={`${ping.name.replace(/ /g, "-")} ping`} />
-                    </div>
-                  ))} */}
-                                </div>
-                                <br />
+                        data.game_completed_status ?
 
-                                {
-                                    completed ?
-                                        <>
-                                            <Confetti />
-                                            <div style={{
-                                                position: 'fixed',
-                                                top: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: '100%',
-                                                zIndex: 50,
-                                            }}>
-                                            </div>
-                                            <div className="complete-message " style={{
-                                                width: '40%',
-                                                height: '400px',
-                                                borderRadius: '20px',
-                                                position: 'fixed',
-                                                top: '50%',
-                                                left: '50%',
-                                                transform: 'translate(-50%, -50%)',
-                                                zIndex: 100,
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                background: `url(${require('../assets/back-screen.png')}) no-repeat center center / cover`,
-
-                                            }}>
-
-                                                <h3 style={{
-                                                    color: 'white',
-                                                    textAlign: 'center',
-                                                    fontSize: '30px',
-                                                    fontWeight: 'bold',
-                                                    position: 'relative',
-                                                }} >Congratulations! You have successfully completed the game</h3>
-                                                <a href="/Details" style={{
-                                                    textDecoration: 'none',
-                                                    color: 'black',
-                                                    border: '1px solid black',
-                                                    borderRadius: '10px',
-                                                    backgroundColor: 'white',
-                                                    padding: '10px',
-                                                }} onClick={() => celebration.pause()}>
-                                                    YAY!
-                                                </a>
-                                            </div>
-                                        </>
-                                        :
-
-                                        <div className="point-level">
-                                            <h2 className='left-subheading text-start flex justify-start text-black ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                <img src={timeicon} alt='clock' style={{ width: "40px", marginLeft: "-10px" }} /> 
-                                                <p id="mins" style={{ paddingTop: 3, marginBottom: 0 }}> 00</p>
-                                                :
-                                                <p id="sec" style={{ paddingTop: 3, marginBottom: 0 }}>00</p>
-                                            </h2>
-                                            <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                Level :null
-                                                {/* {data.modal.game_levels[0].level} */}
-                                            </h2>
-
-                                            <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                                                Points : 0
-                                            </h2>
-                                        </div>
-                                }
-
+                            <div className="fixed z-[10000] w-full h-screen top-0 left-0 bg-[#2f2f8f] flex justify-center items-center">
+                                <p className="px-10 py-4 bg-red-500 text-white text-[18px]">You have already Completed this game. <a href={`/destination/${destination}`} className="underline hover:text-yellow-400">Go Back</a>  </p>
                             </div>
 
-                            {/* <div className="imgcontainer">
-                <img src={data.modal.game_levels[0].position_image} alt="map" style={{
-                  width: "100%",
-                  border: '1px solid #000',
-                  zIndex: -1,
-                }} />
-                {data.modal.game_levels[0].positions.map((position) => (
-                  <div
-                    key={position.name.replace(/ /g, '-')}
-                    id={position.name.replace(/ /g, '-')}
-                    onDragOver={handleDragOver}
-                    onTouchStart={e => atEndTouch(e)}
-                    onDrop={(event) => handleDrop(event, position.name.replace(/ /g, '-'))}
-                    style={{ left: `${position.left}%`, top: `${position.top}%` }}
-                    className="dropPosition"
-                  />
-                ))}
-              </div> */}
+                            :
+                            <div className="tscontainer"  >
+                                <div className="main-ping" style={{ width: '30%', border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20, background: 'white', padding: '10px' }}>
+                                    <img src={data.game_detail.image_path} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
+                                    <p className="text-black">Drag and drop the destinations to correct places </p>
+                                    <div className="placeContainer" >
+                                        {data.game_levels[0].positions.map((ping: any) => (
+                                            <div key={ping.name.replace(/ /g, "-")} className={`pingContainer-${ping.name.replace(/ /g, "-")} pingContainer`} style={{ position: 'relative', margin: '10px' }}>
+                                                <img src={ping.icon} alt={ping.name} draggable
+                                                    onDragStart={(event) => handleDragStart(event, ping.name.replace(/ /g, "-"))}
+                                                    style={{ left: ping.x, top: ping.y, zIndex: completed ? 0 : 100 }}
+                                                    onTouchStart={e => atTouch(e)}
+                                                    className={`${ping.name.replace(/ /g, "-")} ping`} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <br />
 
-                        </div>
+                                    {
+                                        completed ?
+                                            <Complete message="You have completed the level" link={`/destination/${destination}`} />
+                                            :
 
-                        : null
+                                            <div className="point-level">
+                                                <h2 className='left-subheading text-start flex justify-start text-black ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                    <img src={timeicon} alt='clock' style={{ width: "40px", marginLeft: "-10px" }} />
+                                                    <p id="mins" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
+                                                        {b / 10 >= 1 ? b : "0" + b}
+                                                    </p>
+                                                    :
+                                                    <p id="sec" style={{ paddingTop: 3, marginBottom: 0, fontWeight: "700" }}>
+                                                        {a / 10 >= 1 ? a : "0" + a}
+                                                    </p>
+                                                </h2>
+                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                    Level : <span className="font-bold">{data.game_levels[0].level}</span>
+                                                </h2>
+
+                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                    Maximum Points : <span className="font-bold">{data.game_levels[0].max_point}</span>
+                                                </h2>
+
+                                                <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
+                                                    Minimum Points : <span className="font-bold">{data.game_levels[0].min_point}</span>
+                                                </h2>
+                                            </div>
+                                    }
+
+                                </div>
+
+                                <div className="imgcontainer">
+                                    <img src={data.game_levels[0].position_image} alt="map" style={{
+                                        width: "100%",
+                                        border: '1px solid #000',
+                                        zIndex: -1,
+                                    }} />
+                                    {data.game_levels[0].positions.map((position: any) => (
+                                        <div
+                                            key={position.name.replace(/ /g, '-')}
+                                            id={position.name.replace(/ /g, '-')}
+                                            onDragOver={handleDragOver}
+                                            onTouchStart={e => atEndTouch(e)}
+                                            onDrop={(event) => handleDrop(event, position.name.replace(/ /g, '-'))}
+                                            style={{ left: `${position.left}%`, top: `${position.top}%` }}
+                                            className="dropPosition"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                        : <Loading />
                 }
             </div>
             <Footer />

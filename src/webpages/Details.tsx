@@ -26,7 +26,6 @@ export default function Details() {
     })
     data = decrypt(data.result)
     if (!data.isError) {
-      console.log(data)
       setData(data.modal)
       setLoading(false)
     }
@@ -45,7 +44,7 @@ export default function Details() {
   return (
     <>
       <Header />
-      <div className='w-full lg:h-[80vh] bg-[#f5f5f5]'>
+      <div className='w-full  bg-[#f5f5f5]'>
         {
           !data ? <Loading /> :
             <>
@@ -70,16 +69,16 @@ export default function Details() {
               </div>
               <div className='w-11/12 md:w-10/12 mx-auto'>
                 <p className='text-black text-[20px] md:text-[28px] font-[600] leading-6 '>Games Available</p>
-                <div className='my-6 mx-auto' style={{
+                <div className='my-6 mx-auto ' style={{
                   display: 'grid',
                   gap: '1rem',
                   gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,250px),1fr))',
                 }}>
                   {
                     !data.destination_games ? 'No Games Available' :
-                      data.destination_games.map((item: any) => {
+                      data.destination_games.map((item: any,idx:number) => {
                         return (
-                          <div className="w-full h-auto ">
+                          <div key={idx} className="w-fit h-auto ">
                             <p className='text-[18px] w-full py-3 text-black my-1 rounded-t-md text-center font-[400] '>You Won {item.total_points ? item.total_points : "0"} Points</p>
                             <p className='text-[18px] w-full py-3 text-white bg-[#312f92] rounded-t-md text-center font-[700] '>{item.game_name}</p>
                             <img src={item.game_image_path} alt="jigsaw" className='h-[150px] w-full ' />
