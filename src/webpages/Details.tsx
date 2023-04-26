@@ -28,7 +28,7 @@ export default function Details() {
     if (!data.isError) {
       setData(data.modal)
       setLoading(false)
-      console.log(data.modal)
+      // console.log(data)
     }
     else {
       setLoading(false)
@@ -49,26 +49,42 @@ export default function Details() {
         {
           !data ? <Loading /> :
             <>
-              <div className='py-14 w-11/12 md:w-10/12 flex flex-col md:flex-row justify-start items-start mx-auto'>
+              {
+                data.banner_path && (
+                  <div className='w-full h-[400px]' style={{
+                    background: `url(${data.banner_path}) no-repeat center center / cover`,
+                  }}></div>
+                  // <img src={data.banner_path} alt={`${data.name} Banner`} className='w-full' />
+                )
+              }
+              <div className='pt-14 pb-6 w-11/12 md:w-10/12 flex flex-col md:flex-row justify-start items-start mx-auto'>
                 {
                   data.description_img_vid_path && data.description_img_vid_file_type && (
-                    <video width="400" className='w-11/12 md:w-[400]' controls>
-                      <source src={data.description_img_vid_path} type={`video/${data.description_img_vid_file_type}`} />
+                    <video width="400" className='w-full md:w-[49%]' controls>
+                      <source src={data.description_img_vid_path} type={`video/mp4`} />
                       Your browser does not support HTML video.
                     </video>
                   )
                 }
-                {
-                  data.banner_path && (
-                    <img src={data.banner_path} alt={`${data.name} Banner`} className='w-11/12 md:w-[400]' />
-                  )
-                }
-                <div className='md:ml-4'>
+
+                <div className='md:ml-4 md:w-1/2 w-11/12 my-2 md:my-0'>
                   <p className='text-black text-[20px] md:text-[24px] font-[600] leading-6 '>About {data.name}</p>
                   <p className='text-black opacity-90 my-2 text-[18px] font-[400] leading-6 '>About {data.name}</p>
+                  <div className='flex justify-start items-center my-6'>
+                    {
+                      data.destination_files ?
+                        data.destination_files.map((item: any, idx: number) => {
+                          return (
+                            <a key={idx} href={item.file_path} download={data.title + "-" + data.title + ".pdf"}>
+                              <img src={item.file_type === 'pdf' ? require('../assets/pdf.png') : require('../assets/xls.png')} alt={data.title} className='w-[50px] mx-2' />                    </a>
+                          )
+                        })
+                        : null
+                    }
+                  </div>
                 </div>
               </div>
-              <div className='w-11/12 md:w-10/12 mx-auto'>
+              <div className='w-11/12 md:w-10/12 mx-auto  md:mt-8'>
                 <p className='text-black text-[20px] md:text-[28px] font-[600] leading-6 '>Games Available</p>
                 <div className='my-6 mx-auto ' style={{
                   display: 'grid',
@@ -77,7 +93,7 @@ export default function Details() {
                 }}>
                   {
                     !data.destination_games ? 'No Games Available' :
-                      data.destination_games.map((item: any,idx:number) => {
+                      data.destination_games.map((item: any, idx: number) => {
                         return (
                           <div key={idx} className="w-fit h-auto ">
                             <p className='text-[18px] w-full py-3 text-black my-1 rounded-t-md text-center font-[400] '>You Won {item.total_points ? item.total_points : "0"} Points</p>

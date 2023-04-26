@@ -21,10 +21,10 @@ export default function Complete({ message, link, btText = 'YAY!' }: { message: 
                 zIndex: 50,
             }}>
             </div>
-            <div className="complete-message md:w-[40%] w-[90%] md:h-[400px] py-4 px-3 h-auto rounded-lg fixed top-1/2 left-1/2 flex justify-center items-center flex-col " style={{
+            <div className="complete-message bg-black md:w-[40%] w-[90%] md:h-[400px] py-4 px-3 h-auto rounded-lg fixed top-1/2 left-1/2 flex justify-center items-center flex-col " style={{
                 transform: 'translate(-50%, -50%)',
                 zIndex: 100,
-                background: `url(${require('../assets/back-screen.png')}) no-repeat center center / cover`,
+                // background: `url(${require('../assets/back-screen.png')}) no-repeat center center / cover`,
             }}>
 
                 <h3 style={{
