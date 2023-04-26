@@ -20,5 +20,7 @@
         width: 95%!important;
         display: block;
     }
-
+    .jigsaw-puzzle{
+        height: 50vh!important;
+    }
 }

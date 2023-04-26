@@ -61,7 +61,8 @@ export default function Jigsaw() {
     data = decrypt(data.result)
     if (!data.isError) {
       setData(data.modal);
-      setCurrentLevel(data.modal.game_levels.filter((item: any) => item.level_completed_status === false)[0].level)
+      console.log(data.modal)
+      setCurrentLevel(parseInt(data.modal.game_levels.filter((item: any) => item.level_completed_status === false)[0].level)-1)
       startWatch.current();
       setLoading(false)
     }
@@ -77,9 +78,9 @@ export default function Jigsaw() {
 
   async function lastApiCall() {
     const collection: any = {
-      destination_id: data.game_levels[0].destination_id,
-      game_id: data.game_levels[0].game_id,
-      level: data.game_levels[0].level,
+      destination_id: data.game_levels[currentLevel].destination_id,
+      game_id: data.game_levels[currentLevel].game_id,
+      level: data.game_levels[currentLevel].level,
       level_complete_timing: b
     }
 
@@ -112,7 +113,7 @@ export default function Jigsaw() {
               :
               <div className="tscontainer">
                 <div className="main-ping w-[95%] md:w-[25%] bg-white p-[10px]" style={{  border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20,  }}>
-                  <img src={data.game_levels[parseInt(currentLevel)].level_image} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
+                  <img src={data.game_levels[currentLevel].level_image} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
                   <p className="text-black text-[18px] font-bold mx-auto w-fit my-2">Resolve the Puzzle </p>
                   <br />
 
@@ -147,9 +148,9 @@ export default function Jigsaw() {
                   }
                 </div>
                 <JigsawPuzzle
-                  imageSrc={data.game_levels[parseInt(currentLevel)].level_image}
-                  rows={parseInt(currentLevel) + 2}
-                  columns={parseInt(currentLevel) + 2}
+                  imageSrc={data.game_levels[currentLevel].level_image}
+                  rows={currentLevel + 3}
+                  columns={currentLevel + 3}
                   onSolved={lastApiCall}
                   // @ts-ignore
                   className="jigsaw-puzzle relative my-2 md:my-1 w-[95%!important] md:w-[73%!important] "
