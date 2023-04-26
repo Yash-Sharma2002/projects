@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import ContextProvider from './context/Context'
 import Loading from './components/Loader';
 
-// import Word
 
 const Home = React.lazy(() => import('./webpages/Home'));
 const Login = React.lazy(() => import('./webpages/Login'));
@@ -13,9 +12,6 @@ const TreasureHunt = React.lazy(() => import('./components/TreasureHunt'));
 const WordSearch = React.lazy(() => import('./components/WordSearch'));
 const Jigsaw = React.lazy(() => import('./components/Jigsaw'));
 const Details = React.lazy(() => import('./webpages/Details'));
-
-
-
 
 export default function App() {
   return (
@@ -29,7 +25,7 @@ export default function App() {
             <Route path='/destination/:destination' element={<Details />} />
             <Route path='/destination/:destination/game/wheel' element={<WheelOfFortune />} />
             <Route path='/destination/:destination/game/treasure-hunt' element={<TreasureHunt />} />
-            <Route path='/destination/:destination/game/word-search' element={<WordSearch />} />
+            <Route path='/destination/:destination/game/word-search' element={<><WordSearch /> </>} />
             <Route path='/destination/:destination/game/jigshaw' element={<Jigsaw />} />
           </Routes>
         </Suspense>
