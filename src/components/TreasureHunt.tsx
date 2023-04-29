@@ -67,8 +67,6 @@ export default function TreasureHunt() {
             setData(data.modal);
             startWatch.current();
             setLoading(false)
-            console.log(data.modal)
-
         }
         else {
             setMessageType('error')

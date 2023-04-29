@@ -51,7 +51,7 @@ export default function Login() {
                 name: data.modal.name,
                 profile_image: data.modal.profile_image,
                 token: data.modal.token,
-                total_point:data.modal.total_point
+                total_point: data.modal.total_point
             })
 
             localStorage.setItem('user', encrypt({
@@ -65,7 +65,7 @@ export default function Login() {
                 name: data.modal.name,
                 profile_image: data.modal.profile_image,
                 token: data.modal.token,
-                total_point:data.modal.total_point
+                total_point: data.modal.total_point
             }))
         }
         else {
@@ -88,8 +88,14 @@ export default function Login() {
     // }
     const verifyOTP = (enteredOtp: string) => {
         if (RealOTP === enteredOtp) {
+            setMessage('OTP Verified')
+            setMessageType('success')
+            setShow(true)
             return true
         } else {
+            setMessage('OTP is not correct')
+            setMessageType('error')
+            setShow(true)
             return false
         }
     }
@@ -175,6 +181,9 @@ export default function Login() {
                             <input
                                 placeholder='Enter Mobile Number'
                                 type='number'
+                                autoFocus
+
+                                autoComplete="off"
                                 onChange={e => handleNumChange(e.target)}
                                 style={{
                                     userSelect: 'none',

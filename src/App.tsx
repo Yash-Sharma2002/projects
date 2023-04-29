@@ -25,7 +25,7 @@ export default function App() {
             <Route path='/destination/:destination' element={<Details />} />
             <Route path='/destination/:destination/game/wheel' element={<WheelOfFortune />} />
             <Route path='/destination/:destination/game/treasure-hunt' element={<TreasureHunt />} />
-            <Route path='/destination/:destination/game/word-search' element={<><WordSearch /> </>} />
+            <Route path='/destination/:destination/game/word-search' element={<WordSearch />} />
             <Route path='/destination/:destination/game/jigshaw' element={<Jigsaw />} />
           </Routes>
         </Suspense>

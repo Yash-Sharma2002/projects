@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const WheelComponent = ({
     segments,
@@ -12,7 +12,7 @@ const WheelComponent = ({
     classes
 }: any) => {
     let currentSegment = "";
-    let isStarted = false;
+    // let isStarted = false;
     const [isFinished, setFinished] = useState(false);
     let timerHandle: any = 0;
     const timerDelay = segments.length;
@@ -27,13 +27,15 @@ const WheelComponent = ({
     let frames = 0;
     const centerX = 300;
     const centerY = 300;
+    const wheelInit = React.useRef<any>(()=>{});
+
     useEffect(() => {
-        wheelInit();
+        wheelInit.current();
         setTimeout(() => {
             window.scrollTo(0, 1);
         }, 0);
     }, []);
-    const wheelInit = () => {
+    wheelInit.current = () => {
         initCanvas();
         wheelDraw();
     };
@@ -52,7 +54,7 @@ const WheelComponent = ({
         canvasContext = canvas?.getContext("2d");
     };
     const spin = () => {
-        isStarted = true;
+        // isStarted = true;
         if (timerHandle === 0) {
             spinStart = new Date().getTime();
             // maxSpeed = Math.PI / ((segments.length*2) + Math.random())
@@ -129,7 +131,7 @@ const WheelComponent = ({
         ctx.translate(centerX, centerY);
         ctx.rotate((lastAngle + angle) / 2);
         ctx.fillStyle = contrastColor || "white";
-        ctx.font = "bold 2em proxima-nova";
+        ctx.font = "bold 20px proxima-nova";
         ctx.fillText(value.substr(0, 21), size / 2 + 20, 0);
         ctx.restore();
     };
@@ -143,7 +145,7 @@ const WheelComponent = ({
         ctx.strokeStyle = primaryColor || "black";
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
-        ctx.font = "1em proxima-nova";
+        ctx.font = "20px proxima-nova";
         for (let i = 1; i <= len; i++) {
             const angle = PI2 * (i / len) + angleCurrent;
             drawSegment(i - 1, lastAngle, angle);
@@ -158,7 +160,7 @@ const WheelComponent = ({
         ctx.lineWidth = 10;
         ctx.strokeStyle = contrastColor || "white";
         ctx.fill();
-        ctx.font = "bold 2em proxima-nova";
+        ctx.font = "bold 20px proxima-nova";
         ctx.fillStyle = contrastColor || "white";
         ctx.textAlign = "center";
         ctx.fillText(buttonText || "Spin", centerX, centerY + 3);

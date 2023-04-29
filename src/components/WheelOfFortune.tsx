@@ -1,84 +1,92 @@
+// @ts-nocheck
 import React from 'react'
 import '../styles/spinner-wheel.css'
 import Footer from './Footer';
 import Header from './Header';
 import axios from 'axios';
-// @ts-ignore
-import CryptoJS from "crypto-js";
-import { API_BASE_URL, SECRET_KEY } from '../constants/data';
+import { API_BASE_URL } from '../constants/data';
 import WheelComponent from './Wheel';
+import { useParams } from 'react-router-dom';
+import { LoginContext } from '../context/Context';
 
 export default function WheelOfFortune() {
+    const { user, setLoading, decrypt, encrypt, loading, setMessageType, setMessage, setShow } = React.useContext<any>(LoginContext);
+
+    const { destination } = useParams<any>();
 
     const [value, setValue] = React.useState('');
     const [prize, setPrize] = React.useState<any>([]);
     const [data, setData] = React.useState('null');
+    let colors = ["#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F", "#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F"];
+    const [segments, setSegments] = React.useState<any>([]);
+    const ApiCall = React.useRef(() => { })
 
 
-    // async function apiCall() {
-    //     const destination = localStorage.getItem('destinationSlug');
-    //     const bearer = localStorage.getItem('tokenkey');
-
-    //     const response = await axios.get(`${API_BASE_URL}game/${destination}/wheel`, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + bearer
-    //         },
-    //     });
-    //     if (response) {
-    //         var bytes = CryptoJS.AES.decrypt(response.data.result, SECRET_KEY);
-    //         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    //         setData(decryptedData);
-    //         console.log(decryptedData);
-    //         localStorage.setItem('game_id', decryptedData.modal.game_detail.id);
-    //         localStorage.setItem('level', decryptedData.modal.game_levels[0].level);
-    //     }
-    // }
-
-
-
-    const segments = [
-        "Try Again",
-        "1000 Points",
-        "2000 Points",
-        "3000 Points",
-        "4000 Points",
-        "5000 Points",
-        "Try Again",
-        "1st Prize",
-        "2nd Prize",
-        "3rd Prize",
-    ];
-
-    const weelColors = () => {
-        let arr: any = [];
-        let colors = ["#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F"];
-        segments.forEach((el) => {
-            let color: any = colors.shift();
-            arr.push(color);
-            colors.push(color);
+    ApiCall.current = async () => {
+        setLoading(true)
+        let { data } = await axios.get(`${API_BASE_URL}game/${destination}/wheel`, {
+            headers: {
+                'Authorization': 'Bearer ' + user.token,
+            },
         });
+        data = decrypt(data.result)
+        if (!data.isError) {
+            setData(data.modal);
+            setLoading(false)
+            setSegments(data.modal.game_levels[0].slots.map((el: any) => el.title))
+        }
+        else {
+            setMessageType('error')
+            setMessage('Something went wrong. Please try again later.')
+            setShow(true)
+        }
+    }
 
-        return arr;
-    };
-    const segColors = weelColors();
+    async function lastApiCall(slot: number) {
+        const collection: any = {
+            destination_id: data.game_levels[0].destination_id,
+            game_id: data.game_levels[0].game_id,
+            slot: slot,
+        }
 
-    function onFinished(name: any) {
-        setValue(name)
+
+        let response = await axios.post(`${API_BASE_URL}game/wheel/save`, encrypt(collection), {
+            headers: {
+                'Authorization': 'Bearer ' + user.token,
+                'Content-Type': 'text/plain'
+            },
+        });
+        response = decrypt(response.data.result)
+        if (!response.isError) {
+            setMessageType('info')
+            setMessage('You have won ' + response.modal.point + ' points')
+            setShow(true)
+        }
+    }
+
+
+    React.useEffect(() => {
+        ApiCall.current()
+    }, [])
+
+
+    function onFinished(title: string) {
+        // @ts-ignore
+        const winningItem = data.game_levels[0].slots.find((el: any) => el.title === title);
+        lastApiCall(winningItem.slot)
+        setValue(winningItem.title);
         setPrize((p: any) => {
-            return [...p, name]
+            return [...p, winningItem]
         })
     }
 
-    // React.useEffect(() => {
-    //     apiCall()
-    // }, [])
     return (
         <>
 
             <Header />
-            {
-                data ?
-                    <div className='w-full lg:h-[80vh] bg-[#f5f5f5]'>
+            <div className='w-full   bg-[#f5f5f5]'>
+                {
+                    data ?
                         <div className='tscontainer' style={{
                             padding: '40px auto',
                             justifyContent: 'space-between'
@@ -92,16 +100,17 @@ export default function WheelOfFortune() {
                                     fontWeight: '700',
                                     color: 'black'
                                 }}> Your Points:
-                                    <span>{localStorage.getItem('point')}</span> </p>
-                                <p style={{
+                                    {/* @ts-ignore */}
+                                    <span>{data.customer_total_point}</span> </p>
+                                {/* <p style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center', fontSize: '16px',
                                     fontWeight: '700',
                                     color: 'black'
-                                }}> Minimum Poinst required to play:
-                                    {/* <span>{data.modal.game_levels[0].required_point}</span> */}
-                                </p>
+                                }}> Minimum Points required to play:
+                                    <span>{data.game_levels[0].required_point}</span>
+                                </p> */}
                                 <p style={{ textAlign: 'center', fontSize: '16px', color: 'black' }}>  The Prizes you have won will be showed here </p>
                                 <div style={{ height: '300px', width: '100%', overflow: 'auto', padding: '10px' }} >
                                     {
@@ -110,8 +119,8 @@ export default function WheelOfFortune() {
                                                 {
                                                     prize.map((item: any, index: number) => {
                                                         return <p key={index} style={{ textAlign: 'start', fontSize: '16px', fontWeight: '600', color: 'black' }}>
-                                                            {item === 'Try Again' ? '' : 'You Won '}
-                                                            {item}</p>
+                                                            {item.title === 'SORRY NEXT TIME' ? '' : 'You Won '}
+                                                            {item.title}</p>
                                                     })
                                                 }
                                             </>
@@ -121,23 +130,26 @@ export default function WheelOfFortune() {
                                 </div>
                             </div>
                             <div className='mx-auto'>
-                                <WheelComponent
-                                    segments={segments}
-                                    segColors={segColors}
-                                    winningSegment={"8"}
-                                    onFinished={(winner: any) => onFinished(winner)}
-                                    primaryColor="black"
-                                    contrastColor="white"
-                                    buttonText="Spin"
-                                    isOnlyOnce={true}
-                                    classes="wheel-container"
-                                />
+                                {
+                                    !loading &&
+                                    <WheelComponent
+                                        segments={segments}
+                                        segColors={colors}
+                                        winningSegment={"8"}
+                                        onFinished={(winner: any) => onFinished(winner)}
+                                        primaryColor="black"
+                                        contrastColor="white"
+                                        buttonText="Spin"
+                                        isOnlyOnce={true}
+                                        classes="wheel-container"
+                                    />
+                                }
                             </div>
                         </div>
-                    </div >
-                    :
-                    null
-            }
+                        :
+                        null
+                }
+            </div >
 
             <Footer />
         </>

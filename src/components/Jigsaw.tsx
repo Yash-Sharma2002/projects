@@ -61,7 +61,6 @@ export default function Jigsaw() {
     data = decrypt(data.result)
     if (!data.isError) {
       setData(data.modal);
-      console.log(data.modal)
       setCurrentLevel(parseInt(data.modal.game_levels.filter((item: any) => item.level_completed_status === false)[0].level)-1)
       startWatch.current();
       setLoading(false)

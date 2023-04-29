@@ -27,13 +27,7 @@ export default function Complete({ message, link, btText = 'YAY!' }: { message: 
                 // background: `url(${require('../assets/back-screen.png')}) no-repeat center center / cover`,
             }}>
 
-                <h3 style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    fontSize: '30px',
-                    fontWeight: 'bold',
-                    position: 'relative',
-                }} >{message}</h3>
+                <h3 className='text-[20px] md:text-[30px] text-center text-white relative font-bold' >{message}</h3>
                 <a href={link} style={{
                     textDecoration: 'none',
                     color: 'white',
@@ -66,5 +60,6 @@ export function Confetti() {
         zIndex: 1,
         backgroundColor: 'transparent',
         width: '100%',
+        height: '100vh',
     }} id="my-canvas"></canvas>;
 }
