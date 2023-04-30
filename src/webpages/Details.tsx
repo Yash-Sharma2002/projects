@@ -9,7 +9,7 @@ import Loading from '../components/Loader'
 
 export default function Details() {
   const { destination } = useParams()
-  const { user, decrypt, setMessage,encrypt, setMessageType, setShow, setLoading } = React.useContext(LoginContext)
+  const { user, decrypt, setMessage, encrypt, setMessageType, setShow, setLoading } = React.useContext(LoginContext)
 
   const [data, setData] = React.useState<any>(null)
 
@@ -25,6 +25,7 @@ export default function Details() {
       }
     })
     data = decrypt(data.result)
+    console.log(data)
     if (!data.isError) {
       setData(data.modal)
       setLoading(false)
@@ -38,7 +39,7 @@ export default function Details() {
     return
   }
 
-  async function destinationEarn(id: number,file_id:number = 0) {
+  async function destinationEarn(id: number, file_id: number = 0) {
     let collections: any;
     if (id === 4 || id === 3) {
       collections = {
@@ -50,7 +51,7 @@ export default function Details() {
       collections = {
         destination_id: data.id,
         type: id,
-        destination_brochure_id:file_id
+        destination_brochure_id: file_id
       }
     }
     let response = await axios.post(`${API_BASE_URL}destination/earn/point`, encrypt(collections), {
@@ -60,11 +61,11 @@ export default function Details() {
     });
     const res = decrypt(response.data.result)
     if (!res.isError) {
-      if(res.message==='Already Added point!'){
+      if (res.message === 'Already Added point!') {
         setMessage('Already Added point!')
         setMessageType('info')
       }
-      else{
+      else {
         setMessage('You recieved points for this activity')
         setMessageType('success')
       }
@@ -93,7 +94,7 @@ export default function Details() {
               <div className='pt-14 pb-6 w-11/12 md:w-10/12 flex flex-col md:flex-row justify-start items-start mx-auto'>
                 {
                   data.description_img_vid_path && data.description_img_vid_file_type && (
-                    <video width="400" className='w-full md:w-[49%]' controls onClick={()=>destinationEarn(4)} onTouchStartCapture={()=>destinationEarn(4)}>
+                    <video width="400" className='w-full md:w-[49%]' controls onClick={() => destinationEarn(4)} onTouchStartCapture={() => destinationEarn(4)}>
                       <source src={data.description_img_vid_path} type={`video/mp4`} />
                       Your browser does not support HTML video.
                     </video>
@@ -102,13 +103,13 @@ export default function Details() {
 
                 <div className='md:ml-4 md:w-1/2 w-11/12 my-2 md:my-0'>
                   <p className='text-black text-[20px] md:text-[24px] font-[600] leading-6 '>About {data.name}</p>
-                    <p className='text-black opacity-90 my-2 text-[18px] font-[400] leading-6 '>{data.description}</p>
+                  <p className='text-black opacity-90 my-2 text-[18px] font-[400] leading-6 '>{data.description}</p>
                   <div className='flex justify-start items-center my-6'>
                     {
                       data.destination_files ?
                         data.destination_files.map((item: any, idx: number) => {
                           return (
-                            <a key={idx} rel="noreferrer" href={item.file_path} onClick={()=>destinationEarn(6,item.id)} target='_blank' download={data.title + "-" + data.title + ".pdf"}>
+                            <a key={idx} rel="noreferrer" href={item.file_path} onClick={() => destinationEarn(6, item.id)} target='_blank' download={data.title + "-" + data.title + ".pdf"}>
                               <img src={item.file_type === 'pdf' ? require('../assets/pdf.png') : require('../assets/xls.png')} alt={data.title} className='w-[50px] mx-2' />                    </a>
                           )
                         })
@@ -133,10 +134,13 @@ export default function Details() {
                             <p className='text-[18px] w-full py-3 text-white bg-[#312f92] rounded-t-md text-center font-[700] '>{item.game_name}</p>
                             <img src={item.game_image_path} alt="jigsaw" className='h-[150px] w-full ' />
                             {
-                              !item.game_completed_level ?
+                              !item.game_completed_level && item.is_play ?
                                 <a href={`/destination/${destination}/game/${item.game_slug}`} className='text-[18px]  block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '>Play Now</a>
-                                :
-                                <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '> Completed</p>
+                                : item.game_completed_level && item.is_play ?
+                                  <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '> Completed</p>
+                                  : !item.game_completed_level && !item.is_play ?
+                                    <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '> Complete Previous Game</p> :
+                                    null
                             }
                           </div>
                         )
