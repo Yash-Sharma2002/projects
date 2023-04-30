@@ -11,7 +11,7 @@ import axios from 'axios';
 
 export default function Profile() {
 
-  const { user, setMessage, setMessageType, setShow, encrypt } = React.useContext(LoginContext)
+  const { user, setMessage, setMessageType, decrypt, setShow, encrypt } = React.useContext(LoginContext)
   const [isEditing, setIsEditing] = React.useState(false)
   const [data, setData] = React.useState<any>({
     "name": user.name,
@@ -111,14 +111,22 @@ export default function Profile() {
 
   async function profileDetailsUpdate() {
     if (checkValidate()) {
-      console.log(data)
-      await axios.post(PROFILE_UPDATE, encrypt({ ...data, email_verified: "1" }), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + user.token
-        }
-      })
-      window.location.reload()
+      try {
+         await axios.post(PROFILE_UPDATE, encrypt({ ...data, email_verified: "1" }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + user.token
+          }
+        })
+        window.location.reload()
+      } catch (err) {
+        // @ts-ignore
+        const res = decrypt(err.response.data.result)
+          setMessage(res.message)
+          setMessageType('error')
+          setShow(true)
+          return
+      }
     }
   }
 

@@ -118,7 +118,7 @@ export default function WordSearch() {
                           </p>
                         </h2>
                         <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                          Level : <span className="font-bold">{currentLevel}</span>
+                          Level : <span className="font-bold">{currentLevel+1}</span>
                         </h2>
 
                         <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>

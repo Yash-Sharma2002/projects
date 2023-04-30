@@ -118,14 +118,17 @@ export default function Login() {
             OTPSender()
         }
     }
-    function handleNumChange(num: any) {
-        setNumber(num.value)
-        if (num.value.length < 10 || number.length > 10) {
+    const handleNumChange = (e: any) => {
+        if(e.target.value.length > 10){
+            return
+        }
+        setNumber(e.target.value)
+        if (e.target.value.length < 10 || number.length > 10) {
             setDisplayForSecond((prevDisplay) => prevDisplay = false)
             setDisplayForFirst((prevDisplay) => prevDisplay = true)
         }
     }
-    function handleOTPChange(num: any) {
+    const handleOTPChange = (num: any) => {
         setOtp(num.value)
     }
 
@@ -178,13 +181,7 @@ export default function Login() {
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e5e5', width: '95%', my: 2, textAlign: 'center',
                         }}>
                             <Typography className='text-black  mx-[auto!important] mt-[3px!important]  text-center' sx={{ fontSize: '14px!important' }}> +91 </Typography>
-                            <input
-                                placeholder='Enter Mobile Number'
-                                type='number'
-                                autoFocus
-
-                                autoComplete="off"
-                                onChange={e => handleNumChange(e.target)}
+                            <input type="number" name="number" id="number"
                                 style={{
                                     userSelect: 'none',
                                     width: '90%',
@@ -192,6 +189,11 @@ export default function Login() {
                                     borderLeft: '1px solid #e5e5e5',
                                 }}
                                 className='focus:outline-none px-2 border-none text-[14px] text-black bg-white'
+                                placeholder='Enter Mobile Number'
+                                autoFocus
+                                value={number}
+                                onChange={handleNumChange}
+                                onClick={handleNumChange}
                             />
                         </Box>
                         <Button sx={{

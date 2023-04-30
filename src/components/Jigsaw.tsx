@@ -12,6 +12,8 @@ import { API_BASE_URL } from '../constants/data';
 import { useParams } from 'react-router-dom';
 import Complete from './Complete';
 
+import { Divider } from '@mui/material'
+
 //@ts-ignore
 import timeicon from '../assets/timeicon.png';
 import { LoginContext } from '../context/Context';
@@ -61,7 +63,7 @@ export default function Jigsaw() {
     data = decrypt(data.result)
     if (!data.isError) {
       setData(data.modal);
-      setCurrentLevel(parseInt(data.modal.game_levels.filter((item: any) => item.level_completed_status === false)[0].level)-1)
+      setCurrentLevel(parseInt(data.modal.game_levels.filter((item: any) => item.level_completed_status === false)[0].level) - 1)
       startWatch.current();
       setLoading(false)
     }
@@ -111,16 +113,14 @@ export default function Jigsaw() {
 
               :
               <div className="tscontainer">
-                <div className="main-ping w-[95%] md:w-[25%] bg-white p-[10px]" style={{  border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20,  }}>
+                <div className="main-ping w-[95%] md:w-[25%] bg-white p-[10px]" style={{ border: '1px solid rgba(0, 0, 0, 0.175)', borderRadius: 20, }}>
                   <img src={data.game_levels[currentLevel].level_image} alt={data.game_detail.game_name} style={{ width: '100%', borderRadius: 20 }} />
-                  <p className="text-black text-[18px] font-bold mx-auto w-fit my-2">Resolve the Puzzle </p>
-                  <br />
+                  <p className="text-black text-[18px] hidden md:block font-bold mx-auto w-fit my-2">Resolve the Puzzle </p>
 
                   {
                     completed ?
                       <Complete message="You have completed this level." link={`/destination/${destination}/game/jigshaw`} btText='Next Level' />
                       :
-
                       <div className="point-level">
                         <h2 className='left-subheading text-start flex justify-start text-black ' style={{ marginRight: '10px', alignItems: 'center' }}>
                           <img src={timeicon} alt='clock' style={{ width: "40px", marginLeft: "-10px" }} />
@@ -132,17 +132,31 @@ export default function Jigsaw() {
                             {a / 10 >= 1 ? a : "0" + a}
                           </p>
                         </h2>
-                        <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                          Level : <span className="font-bold">{currentLevel}</span>
-                        </h2>
-
-                        <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                          Maximum Points : <span className="font-bold">{data.game_levels[0].max_point}</span>
-                        </h2>
-
-                        <h2 className='left-subheading text-start flex text-black justify-start ' style={{ marginRight: '10px', alignItems: 'center' }}>
-                          Minimum Points : <span className="font-bold">{data.game_levels[0].min_point}</span>
-                        </h2>
+                        <div className='flex md:block justify-center items-center flex-wrap'>
+                          <h2 className='left-subheading text-start flex mx-1 md:mx-0 text-black justify-start items-center'>
+                            Level : <span className="font-bold">{currentLevel + 1}</span>
+                          </h2>
+                          <Divider orientation="vertical" flexItem />
+                          <h2 className='left-subheading text-start flex mx-1 md:mx-0 text-black justify-start items-center'>
+                            <p className='hidden md:block'>
+                              Maximum Points
+                            </p>
+                            <p className='md:hidden mx-1'>
+                              Max.
+                            </p>
+                            : <span className="font-bold">{data.game_levels[0].max_point}</span>
+                          </h2>
+                          <Divider orientation="vertical" flexItem />
+                          <h2 className='left-subheading text-start flex mx-1 md:mx-0 text-black justify-start items-center'>
+                          <p className='hidden md:block'>
+                              Minimum Points
+                            </p>
+                            <p className='md:hidden mx-1'>
+                              Min.
+                            </p>
+                             : <span className="font-bold">{data.game_levels[0].min_point}</span>
+                          </h2>
+                        </div>
                       </div>
                   }
                 </div>

@@ -53,7 +53,6 @@ export default function Details() {
         destination_brochure_id:file_id
       }
     }
-    console.log(collections)
     let response = await axios.post(`${API_BASE_URL}destination/earn/point`, encrypt(collections), {
       headers: {
         'Authorization': 'Bearer ' + user.token,
@@ -94,7 +93,7 @@ export default function Details() {
               <div className='pt-14 pb-6 w-11/12 md:w-10/12 flex flex-col md:flex-row justify-start items-start mx-auto'>
                 {
                   data.description_img_vid_path && data.description_img_vid_file_type && (
-                    <video width="400" className='w-full md:w-[49%]' controls onClick={()=>destinationEarn(4)}>
+                    <video width="400" className='w-full md:w-[49%]' controls onClick={()=>destinationEarn(4)} onTouchStartCapture={()=>destinationEarn(4)}>
                       <source src={data.description_img_vid_path} type={`video/mp4`} />
                       Your browser does not support HTML video.
                     </video>
@@ -129,7 +128,7 @@ export default function Details() {
                     !data.destination_games ? 'No Games Available' :
                       data.destination_games.map((item: any, idx: number) => {
                         return (
-                          <div key={idx} className="w-fit h-auto ">
+                          <div key={idx} className="w-full h-auto ">
                             <p className={`text-[18px] w-full py-3 text-black my-1 rounded-t-md text-center font-[400]  ${item.game_point ? "" : "opacity-0"}`}> {item.game_point ? `You Won ${item.game_point} Points` : "You Won 0 Points"} </p>
                             <p className='text-[18px] w-full py-3 text-white bg-[#312f92] rounded-t-md text-center font-[700] '>{item.game_name}</p>
                             <img src={item.game_image_path} alt="jigsaw" className='h-[150px] w-full ' />
@@ -137,7 +136,7 @@ export default function Details() {
                               !item.game_completed_level ?
                                 <a href={`/destination/${destination}/game/${item.game_slug}`} className='text-[18px]  block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '>Play Now</a>
                                 :
-                                <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '> Play</p>
+                                <p className='text-[18px] cursor-pointer block w-full py-3 text-white bg-[#fc3532] rounded-b-md text-center font-[700] '> Completed</p>
                             }
                           </div>
                         )

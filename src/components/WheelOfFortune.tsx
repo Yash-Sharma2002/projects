@@ -17,6 +17,7 @@ export default function WheelOfFortune() {
     const [value, setValue] = React.useState('');
     const [prize, setPrize] = React.useState<any>([]);
     const [data, setData] = React.useState('null');
+    const [requirePoints, setRequirePoints] = React.useState(0);
     let colors = ["#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F", "#EE4040", "#F0CF50", "#815CD1", "#3DA5E0", "#34A24F"];
     const [segments, setSegments] = React.useState<any>([]);
     const ApiCall = React.useRef(() => { })
@@ -32,6 +33,7 @@ export default function WheelOfFortune() {
         data = decrypt(data.result)
         if (!data.isError) {
             setData(data.modal);
+            setRequirePoints(data.modal.game_levels[0].required_point)
             setLoading(false)
             setSegments(data.modal.game_levels[0].slots.map((el: any) => el.title))
         }
@@ -49,18 +51,27 @@ export default function WheelOfFortune() {
             slot: slot,
         }
 
-
-        let response = await axios.post(`${API_BASE_URL}game/wheel/save`, encrypt(collection), {
-            headers: {
-                'Authorization': 'Bearer ' + user.token,
-                'Content-Type': 'text/plain'
-            },
-        });
-        response = decrypt(response.data.result)
-        if (!response.isError) {
-            setMessageType('info')
-            setMessage('You have won ' + response.modal.point + ' points')
+        try {
+            let response = await axios.post(`${API_BASE_URL}game/wheel/save`, encrypt(collection), {
+                headers: {
+                    'Authorization': 'Bearer ' + user.token,
+                    'Content-Type': 'text/plain'
+                },
+            });
+            response = decrypt(response.data.result)
+            if (!response.isError) {
+                setMessageType('info')
+                setMessage('You have won ' + response.modal.point + ' points')
+                setShow(true)
+                return true
+            }
+        } catch (err) {
+            // @ts-ignore
+            const res = decrypt(err.response.data.result)
+            setMessage(res.message)
+            setMessageType('error')
             setShow(true)
+            return false
         }
     }
 
@@ -70,14 +81,16 @@ export default function WheelOfFortune() {
     }, [])
 
 
-    function onFinished(title: string) {
+    async function onFinished(title: string) {
         // @ts-ignore
         const winningItem = data.game_levels[0].slots.find((el: any) => el.title === title);
-        lastApiCall(winningItem.slot)
-        setValue(winningItem.title);
-        setPrize((p: any) => {
-            return [...p, winningItem]
-        })
+        const isdone = await lastApiCall(winningItem.slot)
+        if (isdone) {
+            setValue(winningItem.title);
+            setPrize((p: any) => {
+                return [...p, winningItem]
+            })
+        }
     }
 
     return (
@@ -102,15 +115,24 @@ export default function WheelOfFortune() {
                                 }}> Your Points:
                                     {/* @ts-ignore */}
                                     <span>{data.customer_total_point}</span> </p>
-                                {/* <p style={{
+                                <p style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center', fontSize: '16px',
                                     fontWeight: '700',
                                     color: 'black'
                                 }}> Minimum Points required to play:
-                                    <span>{data.game_levels[0].required_point}</span>
-                                </p> */}
+                                    <span>{!loading && requirePoints}</span>
+                                </p>
+                                <p style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center', fontSize: '16px',
+                                    fontWeight: '700',
+                                    color: 'black'
+                                }}> Points Deducted everytime you play:
+                                    <span>2000</span>
+                                </p>
                                 <p style={{ textAlign: 'center', fontSize: '16px', color: 'black' }}>  The Prizes you have won will be showed here </p>
                                 <div style={{ height: '300px', width: '100%', overflow: 'auto', padding: '10px' }} >
                                     {
