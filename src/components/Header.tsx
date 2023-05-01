@@ -74,7 +74,8 @@ function Content() {
                                         'aria-labelledby': 'basic-button',
                                     }}
                                 >
-                                    <MenuItem onClick={handleClose}><a href="/profile">Profile</a> </MenuItem>
+                                    <MenuItem onClick={handleClose}><a href="/profile">My Profile</a> </MenuItem>
+                                    <MenuItem onClick={handleClose}><a href="/points">My Points</a> </MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </Menu>
                             </div>
@@ -172,7 +173,11 @@ function SMContent() {
                         <Divider />
 
                         <ListItem button>
-                            <Link className="duration-150 hover:scale-105 py-2" href="/profile" underline="none" sx={{ color: '#000000', fontSize: '16px', fontWeight: '600', mx: '1rem' }}>Profile</Link>
+                            <Link className="duration-150 hover:scale-105 py-2" href="/profile" underline="none" sx={{ color: '#000000', fontSize: '16px', fontWeight: '600', mx: '1rem' }}>My Profile</Link>
+                        </ListItem>
+                        <Divider />
+                        <ListItem button>
+                            <Link className="duration-150 hover:scale-105 py-2" href="/points" underline="none" sx={{ color: '#000000', fontSize: '16px', fontWeight: '600', mx: '1rem' }}>My Points</Link>
                         </ListItem>
                         <Divider />
                         <ListItem button>
