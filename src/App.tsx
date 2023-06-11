@@ -58,8 +58,9 @@ function App() {
         }}>&#10095;</span>
       </section>
       {/* <!-- 3-section --> */}
-      <div className="section-3">
+      <div className="section-3 bg-[#f5af19]">
         <div className="text-2" id="invester">
+          <h3 className="text-[32px] md:text-[44px] text-white w-fit mx-auto my-3">See what our clients say.</h3>
           <div className="testimonial-1">
             <p className="test-1" style={{ color: 'black' }}> Alic in India is a top-notch construction business. I've been very impressed with
               their

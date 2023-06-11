@@ -79,7 +79,7 @@ export default function Header(props: Props) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar component="nav" className='bg-black '>
+            <AppBar component="nav" className='bg-[#03001e!important] '>
                 <Toolbar disableGutters className='w-[90%!important] mx-auto flex justify-between items-center' sx={{ p: 0 }}>
                     <div className='flex justify-start items-center '>
                         <img src={logo} alt="ALIC of INDIA" className='w-[25px] mx-2' />
