@@ -25,8 +25,9 @@ export default function Details() {
       }
     })
     data = decrypt(data.result)
-    console.log(data)
     if (!data.isError) {
+      localStorage.setItem('destination-points', JSON.stringify(data.modal.destination_points))
+      localStorage.setItem('destination-id', JSON.stringify(data.modal.id))
       setData(data.modal)
       setLoading(false)
     }

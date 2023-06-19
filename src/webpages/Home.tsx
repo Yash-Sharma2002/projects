@@ -19,6 +19,10 @@ export default function Home() {
 
     ApiCall.current = async function () {
         setLoading(true)
+        try{
+            localStorage.removeItem('destination-points')
+        }
+        catch(e){}
         let { data } = await axios.get(DESTINATION_LIST, {
             headers: {
                 'Content-Type': 'multipart/form-data',
