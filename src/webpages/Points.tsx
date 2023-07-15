@@ -24,6 +24,7 @@ export default function Points() {
     if (!data.isError) {
       setPoints(data.modal);
       setLoading(false);
+      console.log(data);
     } else {
       setLoading(false);
       setMessageType("error");
@@ -88,14 +89,14 @@ export default function Points() {
                       el.point_type === "+" ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {el.destination_id ? el.destination_id : "None"}
+                    {el.destination_detail  ? el.destination_detail.name : "None"}
                   </td>
                   <td
                     className={`text-left my-2 ${
                       el.point_type === "+" ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {el.game_id ? el.game_id : "None"}
+                    {el.game_detail ? el.game_detail.name : "None"}
                   </td>
                   <td
                     className={`text-left my-2 ${
